@@ -1,5 +1,5 @@
 """Context Gathering Node - Collects and formats learning materials"""
-from ddgs import DDGS
+from duckduckgo_search import DDGS
 from src.state import LearningState
 from src.rag import RAGManager
 from src.utils import get_llm
