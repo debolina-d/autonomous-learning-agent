@@ -5,6 +5,6 @@ langchain-community
 python-dotenv
 langsmith
 streamlit
-duckduckgo-search>=5.0.0
+duckduckgo-search==4.4.3
 chromadb
 sentence-transformers
