@@ -8,3 +8,4 @@ streamlit
 duckduckgo-search==4.4.3
 chromadb
 sentence-transformers
+ddgs
