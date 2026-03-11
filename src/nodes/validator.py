@@ -1,11 +1,13 @@
+"""Context Validation Node - Verifies learning material quality"""
 from src.state import LearningState
 from src.utils import get_llm
 import re
 
 def validate_context_node(state: LearningState):
+    """Validates if gathered context adequately covers learning objectives"""
     print(f"--- [VALIDATING CONTEXT] ---")
-    llm = get_llm()
     
+    llm = get_llm()
     current_retries = state.get("search_retry_count", 0) + 1
     
     prompt = f"""
@@ -20,7 +22,7 @@ def validate_context_node(state: LearningState):
     
     response = llm.invoke(prompt).content
     
-  
+    # Extract score from response
     try:
         score_match = re.search(r'FINAL_SCORE:\s*(\d)', response)
         score = int(score_match.group(1)) if score_match else 1

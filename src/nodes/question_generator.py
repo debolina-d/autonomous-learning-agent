@@ -1,10 +1,12 @@
+"""Question Generation Node - Creates MCQ assessments"""
 from src.state import LearningState
 from src.utils import get_llm
 
 def generate_questions_node(state: LearningState):
+    """Generates exactly 5 MCQs based on learning context and objectives"""
     print(f"--- [GENERATING MCQs] {state['topic']} ---")
     
-    llm = get_llm() 
+    llm = get_llm()
     
     prompt = f"""
     Context: {state['gathered_context']}
@@ -12,9 +14,9 @@ def generate_questions_node(state: LearningState):
     
     STRICT RULES:
     1. Generate EXACTLY 5 questions, no more, no less.
-    2. Do NOT include correct answers, keys, or explanations in the generated text.
-    3. Provide only the questions and options A, B, C, and D.
-    4. Ensure questions assess the following objectives: {state['objectives']}
+    2. Do NOT include correct answers, keys, or explanations.
+    3. Provide only questions and options A, B, C, and D.
+    4. Ensure questions assess: {state['objectives']}
     5. Number each question clearly (1, 2, 3, 4, 5).
     
     FORMAT:
@@ -34,5 +36,4 @@ def generate_questions_node(state: LearningState):
     """
     
     response = llm.invoke(prompt).content
-    
     return {"questions": [response]}

@@ -1,13 +1,14 @@
-# src/nodes/gatherer.py
+"""Context Gathering Node - Collects and formats learning materials"""
 from ddgs import DDGS
 from src.state import LearningState
 from src.rag import RAGManager
 from src.utils import get_llm
 
 def gather_context_node(state: LearningState):
+    """Gathers learning materials via web search and formats them using RAG + LLM"""
     print(f"--- [GATHERING] {state['topic']} ---")
     
-    # 1. Search the web
+    # Step 1: Web search for learning materials
     query = f"{state['topic']} machine learning deep learning tutorial explanation"
     raw_results = []
     
@@ -19,30 +20,26 @@ def gather_context_node(state: LearningState):
         print(f"Search error: {e}")
         return {"gathered_context": "Error gathering context."}
 
-    # 2. Use RAG to get relevant content
+    # Step 2: Process with RAG for semantic retrieval
     rag = RAGManager(collection_name=state['topic'])
-    
-    # Clear previous data for this topic to ensure freshness
-    rag.clear_collection()
-    
+    rag.clear_collection()  # Clear old data for fresh content
     rag.add_documents(raw_results)
     
+    # Retrieve most relevant content based on learning objectives
     refined_context = rag.retrieve(query=state['objectives'], n_results=3)
-    
     if not refined_context:
         refined_context = "\n".join(raw_results[:2])
     
-    # Limit content length for faster processing
+    # Limit content length for faster LLM processing
     refined_context = refined_context[:2500]
     
-    # 3. Format the content using LLM
+    # Step 3: Format content into structured study guide using LLM
     llm = get_llm()
-    
     format_prompt = f"""
     Create a well-structured study material for the topic: {state['topic']}
     
     Learning Objectives: {state['objectives']}
-    Raw Content: {refined_context[:3000]}  # Limit content length
+    Raw Content: {refined_context}
     
     Format the content as:
     ## {state['topic']} - Study Guide

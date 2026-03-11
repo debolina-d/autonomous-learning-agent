@@ -1,11 +1,11 @@
+"""Feynman Teaching Node - Provides simplified explanations for struggling learners"""
 from src.state import LearningState
 from src.utils import get_llm
 
 def feynman_teaching_node(state: LearningState):
-    """
-    Identifies gaps and provides simplified teaching using Feynman Technique.
-    """
+    """Generates Feynman-style simplified explanations based on learner's mistakes"""
     print(f"--- [FEYNMAN ADAPTIVE TEACHING] ---")
+    
     llm = get_llm()
     
     prompt = f"""
@@ -22,20 +22,20 @@ def feynman_teaching_node(state: LearningState):
     ## 🧠 Feynman Learning: {state['topic']}
     
     ### 🎯 Step 1: Simple Explanation
-    [Explain the concept as if teaching a 12-year-old child. Use simple words and avoid jargon.]
+    [Explain as if teaching a 12-year-old. Use simple words, avoid jargon.]
     
     ### 🔍 Step 2: Identify Knowledge Gaps
-    [Based on the learner's incorrect answers, identify specific areas of confusion:]
+    [Based on incorrect answers, identify specific areas of confusion:]
     - Gap 1: [specific misconception]
     - Gap 2: [another area of confusion]
     
     ### 🎨 Step 3: Use Analogies & Examples
-    [Provide real-world analogies to make complex concepts understandable:]
+    [Provide real-world analogies:]
     - **Analogy 1:** [simple comparison]
     - **Example:** [concrete example]
     
     ### 🔄 Step 4: Simplify & Review
-    [Summarize the key points in the simplest possible terms:]
+    [Summarize key points in simplest terms:]
     1. [Key point 1]
     2. [Key point 2]
     3. [Key point 3]
