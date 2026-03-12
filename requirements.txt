@@ -8,4 +8,7 @@ streamlit
 duckduckgo-search==4.4.3
 chromadb
 sentence-transformers
+opentelemetry-api==1.24.0
+opentelemetry-sdk==1.24.0
+opentelemetry-exporter-otlp==1.24.0
 ddgs
