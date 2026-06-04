@@ -1,38 +1,41 @@
-# 🎓 AI Learning Assistant
+# 🎓 Autonomous AI Learning Agent
 
-An intelligent, autonomous learning system powered by LangGraph that provides personalized education through adaptive assessments and the Feynman teaching technique.
+An intelligent, autonomous educational platform designed to generate personalized learning roadmaps on any topic. Powered by an advanced agentic workflow (LangGraph) and high-speed LLMs (Groq), the application mimics a real-world tutor. It dynamically searches the web for study materials, generates interactive assessments, grades the user, and—if the user struggles—employs the **Feynman Technique** to explain complex concepts through simple analogies.
 
-## 🌟 Features
+## ✨ Core Functionalities
 
-- **Dynamic Topic Generation**: Enter any topic and AI generates 5 progressive learning checkpoints
-- **Web-Powered Learning**: Gathers study materials from DuckDuckGo search with RAG-based semantic retrieval
-- **Interactive MCQ Assessments**: 5 multiple-choice questions per checkpoint with radio button selection
-- **Adaptive Learning Flow**: 70% mastery threshold determines progression
-- **Feynman Teaching Mode**: Simplified explanations triggered for scores below threshold
-- **Progress Tracking**: Visual sidebar showing completed, current, and locked checkpoints
-- **Modern UI**: Clean Streamlit interface with intuitive navigation
+- **Dynamic Roadmap Generation**: Enter any topic and the AI breaks it down into 5 progressive learning checkpoints with specific learning objectives.
+- **Autonomous Content Gathering (RAG)**: Dynamically searches the web, embeds text into ChromaDB, and retrieves semantically relevant paragraphs to build clean Markdown study guides.
+- **Interactive Knowledge Assessment**: Dynamically generates 5 Multiple-Choice Questions (MCQs) rendered as interactive cards. The AI Teacher grades tests and calculates percentage scores.
+- **Adaptive "Feynman" Learning Mode**: Enforces a 70% mastery threshold. If a user scores below 70%, the system routes to a Feynman Teacher Node that identifies wrong answers and generates simplified, analogy-driven explanations.
+- **Persistent Progress Tracking**: Utilizes Local Storage to save user progress, historical scores, and active checkpoints so users can resume at any time.
 
-## 🏗️ Architecture
+## 🛠️ Technology Stack
 
-### Core Components
+### Backend (The Brain)
+- **FastAPI**: High-performance asynchronous web server and REST API framework.
+- **LangGraph & LangChain**: Orchestrates the autonomous agent workflow with conditional logic routing.
+- **Groq API (`llama-3.1-8b-instant`)**: Ultra-low latency LLM inference.
+- **ChromaDB & Sentence Transformers**: Vector database and embeddings (`all-MiniLM-L6-v2`) for local RAG functionality.
+- **DuckDuckGo Search (DDGS)**: Real-time programmatic web searching.
 
-- **LangGraph Workflow**: Orchestrates the learning pipeline with conditional routing
-- **RAG System**: ChromaDB + sentence-transformers for semantic content retrieval
-- **LLM Integration**: Groq API (llama-3.1-8b-instant) for content generation
-- **State Management**: TypedDict-based state tracking across workflow nodes
+### Frontend (The Interface)
+- **Vanilla JavaScript (ES6)**: Handles client-side logic, API calls, and markdown parsing natively.
+- **HTML5 & Custom CSS3**: Modern "Glassmorphism" design, dark-mode aesthetics, and responsive micro-animations.
 
-### Workflow Nodes
+## 🏗️ Architectural Workflow (The LangGraph Pipeline)
 
-1. **Gatherer**: Web search → RAG retrieval → LLM formatting
-2. **Validator**: Context relevance scoring (1-5 scale)
-3. **Question Generator**: Creates 5 MCQs with A/B/C/D options
-4. **Verifier**: Grades answers and calculates percentage score
-5. **Feynman Teacher**: Generates 5-step simplified explanations
+The backend operates on a state machine (`StateGraph`) that passes a `LearningState` object between specialized nodes:
+
+1. `gather_context_node`: Searches the web, runs RAG, and writes the study guide.
+2. `validate_context_node`: Scores the generated study guide out of 5. Forces retries if quality is poor.
+3. `generate_questions_node`: Reads the valid study guide and writes 5 targeted MCQs.
+4. `verify_understanding_node`: Grades user answers against the study guide and outputs a score and feedback.
+5. `feynman_teaching_node`: Triggered conditionally if the score is < 70% to generate simplified analogies.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
 - Python 3.10+
 - Groq API Key ([Get one here](https://console.groq.com/keys))
 
@@ -64,32 +67,9 @@ LANGCHAIN_TRACING_V2=false  # Set to true for LangSmith tracing
 ### Running the Application
 
 ```bash
-streamlit run app.py
+python app.py
 ```
-
-The app will open in your browser at `http://localhost:8501`
-
-## 📖 Usage
-
-1. **Enter a Topic**: Type any subject you want to learn (e.g., "Machine Learning", "Python Programming")
-2. **AI Generates Path**: System creates 5 progressive checkpoints with learning objectives
-3. **Study Material**: Review AI-curated content from web sources
-4. **Take Assessment**: Answer 5 MCQs using radio button selection
-5. **Get Feedback**:
-   - **Score ≥ 70%**: Proceed to next checkpoint
-   - **Score < 70%**: Enter Feynman Learning Mode for simplified explanations
-6. **Retake or Progress**: Retake assessment after Feynman learning or move to next checkpoint
-7. **Complete Path**: Finish all 5 checkpoints to master the topic
-
-## 🛠️ Technology Stack
-
-- **Framework**: Streamlit
-- **Orchestration**: LangGraph
-- **LLM**: Groq (llama-3.1-8b-instant)
-- **Vector DB**: ChromaDB
-- **Embeddings**: sentence-transformers (all-MiniLM-L6-v2)
-- **Search**: DuckDuckGo Search (DDGS)
-- **State Management**: LangChain
+The app will start on port 8002. Open your browser at `http://localhost:8002`.
 
 ## 📁 Project Structure
 
@@ -106,79 +86,19 @@ code/
 │   ├── rag.py              # RAG manager with ChromaDB
 │   ├── state.py            # State schema definitions
 │   └── utils.py            # LLM configuration
-├── app.py                  # Main Streamlit application
+├── static/                 # Frontend Assets
+│   ├── index.html          # Main UI
+│   ├── style.css           # Glassmorphism styling
+│   └── app.js              # Vanilla JS logic & API integration
+├── app.py                  # FastAPI Backend Server
 ├── requirements.txt        # Python dependencies
 ├── runtime.txt             # Python version specification
 ├── .env                    # Environment variables (not tracked)
 └── .gitignore              # Git ignore rules
 ```
 
-## 🔧 Configuration
-
-### Environment Variables
-
-- `GROQ_API_KEY`: Required - Your Groq API key
-- `LANGCHAIN_TRACING_V2`: Optional - Enable LangSmith tracing (true/false)
-- `LANGCHAIN_API_KEY`: Optional - LangSmith API key for tracing
-- `LANGCHAIN_PROJECT`: Optional - LangSmith project name
-
-### Customization
-
-**Modify Mastery Threshold** (default: 70%):
-```python
-# In src/graph.py, update the routing condition
-if state["understanding_score"] >= 70:  # Change this value
-```
-
-**Adjust Number of Questions** (default: 5):
-```python
-# In src/nodes/question_generator.py
-# Update the prompt to generate different number of questions
-```
-
-**Change LLM Model**:
-```python
-# In src/utils.py
-llm = ChatGroq(
-    model="llama-3.1-8b-instant",  # Change model here
-    temperature=0
-)
-```
-
-## 🎯 Workflow Requirements
-
-The system implements 10 core workflow requirements:
-
-1. ✅ **Define Checkpoint**: User enters topic → AI generates 5 checkpoints
-2. ✅ **Gather Context**: DuckDuckGo search (8 results) + RAG retrieval
-3. ✅ **Validate Context**: Relevance scoring (1-5 scale, 4+ passes)
-4. ✅ **Process Context**: LLM formats into structured study guide
-5. ✅ **Generate Questions**: Creates exactly 5 MCQs with A/B/C/D options
-6. ✅ **Assess Learner**: Radio button MCQ interface with submission
-7. ✅ **Evaluate Score**: Calculates percentage (correct/5 * 100)
-8. ✅ **Apply Feynman Teaching**: 5-step explanations for scores < 70%
-9. ✅ **Mark Complete & Progress**: Tracks checkpoint completion
-10. ✅ **Continue or End**: Loops until all 5 checkpoints completed
-
 ## 🤝 Contributing
-
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📝 License
-
 This project is open source and available under the MIT License.
-
-## 🙏 Acknowledgments
-
-- **LangChain/LangGraph**: Workflow orchestration framework
-- **Groq**: Fast LLM inference
-- **ChromaDB**: Vector database for RAG
-- **Streamlit**: Web application framework
-
-## 📧 Contact
-
-For questions or feedback, please open an issue on GitHub.
-
----
-
-**Built with ❤️ using LangGraph and Streamlit**
