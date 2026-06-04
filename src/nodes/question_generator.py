@@ -4,6 +4,10 @@ from src.utils import get_llm
 
 def generate_questions_node(state: LearningState):
     """Generates exactly 5 MCQs based on learning context and objectives"""
+    if state.get("questions") and not any("FEYNMAN_PHASE|" in q for q in state["questions"]):
+        print(f"--- [SKIPPING GENERATING MCQs] Questions already exist ---")
+        return {}
+
     print(f"--- [GENERATING MCQs] {state['topic']} ---")
     
     llm = get_llm()

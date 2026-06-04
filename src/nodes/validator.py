@@ -5,6 +5,10 @@ import re
 
 def validate_context_node(state: LearningState):
     """Validates if gathered context adequately covers learning objectives"""
+    if state.get("questions") or state.get("relevance_score", 0) >= 4:
+        print(f"--- [SKIPPING VALIDATING CONTEXT] Already validated ---")
+        return {}
+
     print(f"--- [VALIDATING CONTEXT] ---")
     
     llm = get_llm()

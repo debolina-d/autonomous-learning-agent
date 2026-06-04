@@ -6,10 +6,14 @@ from src.utils import get_llm
 
 def gather_context_node(state: LearningState):
     """Gathers learning materials via web search and formats them using RAG + LLM"""
+    if state.get("questions") or (state.get("gathered_context") and "Error gathering" not in state["gathered_context"]):
+        print(f"--- [SKIPPING GATHERING] Context already exists ---")
+        return {}
+
     print(f"--- [GATHERING] {state['topic']} ---")
     
     # Step 1: Web search for learning materials
-    query = f"{state['topic']} machine learning deep learning tutorial explanation"
+    query = f"{state['topic']} guide explanation tutorial"
     raw_results = []
     
     try:

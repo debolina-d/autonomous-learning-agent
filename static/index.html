@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 AI Learning Assistant - Personal LMS</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app" class="stApp">
+        <!-- 1. DASHBOARD VIEW -->
+        <div id="dashboard-view" class="view-container">
+            <!-- Hero Header -->
+            <div class="hero-header">
+                <div class="title-gradient">🎓 AI Learning Assistant</div>
+                <div class="subtitle-text">Personalized Adaptive Education Orchestrated by Agentic AI</div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stats-active-courses">0</div>
+                        <div class="stat-label">Active Courses</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stats-checkpoints">0</div>
+                        <div class="stat-label">Checkpoints Mastered</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-award"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stats-avg-score">0%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Layout -->
+            <div class="dashboard-grid">
+                <!-- Left: Start New Course -->
+                <div class="glass-card new-course-card">
+                    <h2><i class="fas fa-plus-circle"></i> Begin a New Journey</h2>
+                    <p class="card-desc">Enter any topic you want to master. Our AI Agent will compile the roadmap, gather study materials, and build custom quizzes.</p>
+                    
+                    <form id="new-course-form" class="custom-form">
+                        <div class="input-group">
+                            <label for="course-topic">What topic do you want to learn today?</label>
+                            <input type="text" id="course-topic" placeholder="e.g. Quantum Computing, Kubernetes, Roman History..." required>
+                        </div>
+                        <button type="submit" class="btn btn-gradient" id="btn-generate-path">
+                            <span class="btn-text"><i class="fas fa-wand-magic-sparkles"></i> Generate Learning Path</span>
+                            <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i> Designing Path...</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right: Active/History Courses -->
+                <div class="glass-card history-card">
+                    <h2><i class="fas fa-history"></i> My Learning Paths</h2>
+                    <p class="card-desc">Resume your existing courses or delete paths you no longer wish to track.</p>
+                    
+                    <div id="courses-history-list" class="history-list">
+                        <!-- Dynamic Course History Items will load here -->
+                        <div class="empty-state">
+                            <i class="fas fa-graduation-cap"></i>
+                            <p>No active courses yet. Enter a topic above to begin!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. ACTIVE COURSE VIEW -->
+        <div id="course-view" class="view-container hidden">
+            <div class="course-layout">
+                <!-- Sidebar Roadmap -->
+                <aside class="sidebar">
+                    <div class="sidebar-header">
+                        <button class="btn-back" id="btn-back-to-dashboard">
+                            <i class="fas fa-arrow-left"></i> Dashboard
+                        </button>
+                        <h3 id="active-course-title">Topic Title</h3>
+                        <div class="active-course-badge">Active Roadmap</div>
+                    </div>
+                    <hr class="sidebar-divider">
+                    <div class="roadmap-list" id="sidebar-roadmap-list">
+                        <!-- Checkpoints will load here dynamically -->
+                    </div>
+                </aside>
+
+                <!-- Main Study Area -->
+                <main class="main-content">
+                    <!-- Checkpoint Header & Progress -->
+                    <div class="checkpoint-banner">
+                        <div class="banner-top">
+                            <h2 id="current-checkpoint-title">Checkpoint 1: Fundamentals</h2>
+                            <div class="progress-percent" id="course-progress-percent">Progress: 0/5</div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="course-progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="objectives-box">
+                            <strong>Learning Objectives:</strong> <span id="current-checkpoint-objectives">Objectives list...</span>
+                        </div>
+                    </div>
+
+                    <!-- Study Material Card -->
+                    <div class="glass-card study-material-card">
+                        <div class="card-header" id="study-material-header">
+                            <h3><i class="fas fa-book-open"></i> Study Material</h3>
+                            <button class="btn-icon" id="toggle-study-material"><i class="fas fa-chevron-up"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="study-material-body">
+                            <!-- Structured Markdown study guide will load here -->
+                        </div>
+                    </div>
+
+                    <!-- Quiz / Assessment Card -->
+                    <div class="glass-card quiz-card" id="quiz-section-container">
+                        <h2><i class="fas fa-pen-nib"></i> Knowledge Assessment</h2>
+                        <p class="quiz-instruction">Answer the questions below based on the study material to master this checkpoint (70% required to pass).</p>
+                        
+                        <form id="quiz-form">
+                            <div id="quiz-questions-list">
+                                <!-- MCQs will load here dynamically -->
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-gradient" id="btn-submit-answers">
+                                    <span class="btn-text"><i class="fas fa-check-circle"></i> Submit Assessment</span>
+                                    <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i> Grading answers...</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Feynman Mode Adaptive Explanation Card -->
+                    <div class="glass-card feynman-card hidden" id="feynman-section-container">
+                        <div class="feynman-header">
+                            <div class="feynman-badge"><i class="fas fa-brain"></i> Feynman Mode</div>
+                            <h2>Feynman Adaptive Explanation</h2>
+                        </div>
+                        <div class="feynman-alert error" id="feynman-score-alert">
+                            <i class="fas fa-exclamation-triangle"></i> You scored 40% — below the 70% threshold. Let's fill the gaps!
+                        </div>
+                        <div class="feynman-alert info">
+                            <i class="fas fa-lightbulb"></i> Our AI Teacher identified your incorrect answers and created a simplified, analogy-rich breakdown below.
+                        </div>
+                        
+                        <div class="feynman-content-box" id="feynman-explanation-box">
+                            <!-- Feynman explanation HTML will load here -->
+                        </div>
+
+                        <div class="feynman-actions">
+                            <button class="btn btn-gradient" id="btn-retake-quiz">
+                                <span class="btn-text"><i class="fas fa-redo"></i> Retake Assessment</span>
+                                <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i> Generating questions...</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mastered Checkpoint Success Card -->
+                    <div class="glass-card success-card hidden" id="success-section-container">
+                        <div class="success-icon"><i class="fas fa-trophy"></i></div>
+                        <h2>Checkpoint Mastered!</h2>
+                        <p id="success-score-text">Excellent! You scored 100% and showed strong understanding.</p>
+                        
+                        <div class="success-actions">
+                            <button class="btn btn-gradient" id="btn-next-checkpoint">
+                                <span class="btn-text">Proceed to Next Checkpoint <i class="fas fa-arrow-right"></i></span>
+                                <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i> Loading Next Step...</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Section (Shared) -->
+                    <div class="glass-card feedback-card hidden" id="feedback-section-container" style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem;"><i class="fas fa-clipboard-check"></i> Assessment Feedback</h3>
+                        <div id="feedback-content" class="markdown-content"></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background overlays for loaders -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="spinner-container">
+            <div class="spinner-glow"></div>
+            <div class="spinner-logo"><i class="fas fa-graduation-cap"></i></div>
+            <div class="spinner-text" id="loading-overlay-text">AI is working...</div>
+        </div>
+    </div>
+
+    <!-- Dynamic JavaScript -->
+    <script src="/static/app.js"></script>
+</body>
+</html>

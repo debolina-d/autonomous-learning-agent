@@ -11,3 +11,4 @@ class LearningState(TypedDict):
     learner_answers: str          # User's answers (e.g., "1.A, 2.B, 3.C")
     understanding_score: int      # Assessment score (0-100)
     search_retry_count: int       # Number of context gathering retries  
+    feedback: str                 # Feedback about wrong answers (e.g. "Q2, Q4" or "None")

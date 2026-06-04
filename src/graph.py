@@ -41,8 +41,7 @@ def create_graph():
 
     workflow.add_conditional_edges("verify_understanding", check_mastery)
     
-    # Feynman teaching loops back to generate new questions
-    workflow.add_edge("feynman_teaching", "generate_questions")
+    workflow.add_edge("feynman_teaching", END)
     workflow.add_edge("generate_questions", END)
 
     return workflow.compile()

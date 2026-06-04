@@ -22,6 +22,8 @@ def verify_understanding_node(state: LearningState):
     3. Compare learner's answers to correct answers.
     4. Calculate score: (Correct answers / 5) * 100.
     5. Provide result in format: FINAL_PERCENTAGE: [number]
+    6. Provide feedback ONLY for incorrect answers in format:
+    FEEDBACK: [List the question, the user's incorrect answer, and the correct answer with a brief explanation. If all answers are correct, write exactly "None"]
     """
     
     response = llm.invoke(prompt).content
@@ -33,4 +35,13 @@ def verify_understanding_node(state: LearningState):
     except Exception:
         score = 0
         
-    return {"understanding_score": score}
+    # Extract feedback from response
+    try:
+        feedback_match = re.search(r"FEEDBACK:\s*(.*)", response, re.DOTALL)
+        feedback = feedback_match.group(1).strip() if feedback_match else ""
+        if feedback.strip().lower() == "none":
+            feedback = ""
+    except Exception:
+        feedback = ""
+        
+    return {"understanding_score": score, "feedback": feedback}
